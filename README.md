@@ -1,2 +1,2 @@
-# lama
-Code description for 'LaMa'
+# What is LaMa?
+- Reference: https://github.com/saic-mdal/lama
