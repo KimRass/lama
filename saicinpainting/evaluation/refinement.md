@@ -18,6 +18,25 @@ def _pyrdown_mask(mask : torch.Tensor, downsize : tuple=None, eps : float=1e-8, 
 ```
 - `_pyrdown`과 마찬가지로 `downsize` 인자에 어떤 값을 주는 경우는 없습니다. 따라서 이 함수에서는 마스크를 항상 절반의 크기로 Downscale합니다.
 - 이 함수가 사용될 때 `blur_mask`와 `round_up`은 항상 둘 다 `True` 또는 `False`를 값으로 받습니다. 따라서 `round_up`은 필요가 없습니다.
+## Difference by `blur_mask`
+- Original mask (2,482 x 3,509)
+    - <img src="https://i.imgur.com/SY3xdpI.png" alt="original_mask" width="600">
+- The first scale of mask pyramid (1,128 x 1,595)
+    - <img src="https://i.imgur.com/cxgRh9R.png" alt="first_scale" width="500">
+- The second scale of mask pyramid when `blur_mask=False` (564 x 797)
+    - <img src="https://i.imgur.com/fqZE4RB.png" alt="second_scale_false" width="400">
+- The second scale of mask pyramid when `blur_mask=True` (564 x 797)
+    - <img src="https://i.imgur.com/7LC93al.png" alt="second_scale_true" width="400">
+
+# `_get_image_mask_pyramid`
+```python
+breadth = min(h,w)
+n_scales = min(1 + int(round(max(0,np.log2(breadth / min_side)))), max_scales)
+```
+- 이미지의 가로와 세로 중 작은 쪽을 기준으로 `n_scales`가 정해지고 `max_scales`보다 클 수 없습니다.
+    - `min_side * 2` 이상부터 `n_scales=2`
+    - `min_side * 4` 이상부터 `n_scales=3`
+    - 그 외 `n_scales=1`
 
 # `refine_predict`
 ```python
