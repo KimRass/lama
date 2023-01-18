@@ -38,6 +38,14 @@ n_scales = min(1 + int(round(max(0,np.log2(breadth / min_side)))), max_scales)
     - `min_side * 4` 이상부터 `n_scales=3`
     - 그 외 `n_scales=1`
 
+
+# `_infer`
+```python
+pred_downscaled = _pyrdown(pred[:,:,:orig_shape[0],:orig_shape[1]])
+mask_downscaled = _pyrdown_mask(mask[:,:1,:orig_shape[0],:orig_shape[1]], blur_mask=False, round_up=False)
+```
+- `pad_tensor_to_modulo`를 사용했으므로 원래의 해상도로 복원합니다.
+
 # `refine_predict`
 ```python
 gpu_ids = [f'cuda:{gpuid}' for gpuid in gpu_ids.replace(" ","").split(",") if gpuid.isdigit()]
@@ -71,3 +79,12 @@ for idd in range(len(gpu_ids)):
     forward_rears[idd].to(devices[idd])
 ```
 - 4개의 GPU를 쓴다고 가정해 보겠습니다. `n_resnet_block`는 18이므로 `resblocks_per_gpu`는 4입니다. 앞의 3개의 GPU에는 각각 Index 4 ~ 7, 8 ~ 11, 12 ~ 15에 해당하는 각 4개의 모듈이 할당됩니다. 그리고 마지막 1개의 GPU에는 Index 16 ~ 21에 해당하는 6개의 모듈이 할당됩니다.
+```python
+image = pad_tensor_to_modulo(image, modulo)
+mask = pad_tensor_to_modulo(mask, modulo)
+```
+- Refine하지 않고 단순히 LaMa를 이용해 Infer할 때는 Pad가 필요 없습니다. Refine 시에만 필요합니다.
+```python
+image_inpainted = image_inpainted[:,:,:orig_shape[0], :orig_shape[1]]
+```
+- 원래의 해상도로 복원합니다.
