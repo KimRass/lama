@@ -125,10 +125,15 @@ if on_pred:
 - Big LaMa-Fourier differs from LaMa-Fourier in three aspects:
   - The depth of the generator; It has 18 residual blocks, all based on FFC, resulting in 51M parameters.
 
-
 # Fast Fourier Convolution
 - Reference: https://medium.com/mlearning-ai/fast-fourier-convolution-a-detailed-view-a5149aae36c4
 - The idea is to replace the convolution layer (Conv2D) with the FFC block.
-- *FFC block consists of 2 paths — local and global. The local path uses ordinary convolution operators on the input feature maps and the global path operates in the spectral domain.*
+- **FFC block consists of 2 paths — local and global. The local path uses ordinary convolution operators on the input feature maps and the global path operates in the spectral domain.**
 - FFC
   - <img src="https://miro.medium.com/v2/resize:fit:1208/format:webp/1*yb9nibDAneeAjVTEOAH8qw.png" width="400">
+- `f_l2l`, `f_l2g`, `f_g2l` are convolution layers. `f_g2g` a Spectral Transformer.
+- The whole FFC block is just a replacement of Conv2D layer.
+## Spectral Transformer
+- Spectral transformer
+  - https://miro.medium.com/v2/resize:fit:710/format:webp/1*1jyipzylLImOxlkqt-W1ew.png
+- The spectral transformer has 3 branches — Fourier Unit (FU) and Local Fourier Unit (LFU) and a Residual connection. FU operates on the whole input feature map X, whereas the LFU operates only on a quarter of the input feature channels (C/4).
