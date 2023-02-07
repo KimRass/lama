@@ -78,6 +78,10 @@ masking real images.
 - In the case of a large mask, an even large yet limited receptive field may not be enough to access information necessary for generating a quality inpainting.
 - Popular convolutional architectures might lack a sufficiently large effective receptive field.
 ### large training masks
+## Dataset
+- We use Places [66] and CelebAHQ [21] datasets.
+## Metric
+- We follow the established practice in recent image2image literature and use Learned Perceptual Image Patch Similarity (LPIPS) [63] and Frechet inception distance (FID) [15] metrics. Compared to pixel-level L1 and L2 distances, LPIPS and FID are more suitable for measuring performance of large masks inpainting when multiple natural completions are plausible.
 
 ## Method
 - Our goal is to inpaint a color image 'x' masked by a binary mask of unknown pixels 'm'. The mask 'm' is stacked with the masked image, resulting in a four-channel input tensor 'x'.
